@@ -6,15 +6,15 @@ var app = express();
 var user = require('./controllers/usercontroller');
 var game = require('./controllers/gamecontroller');
 
-app.use('/', (req, res) => {
-  res.send('app is running');
-});
-
-app.use(require('body-parser'));
+// app.use(require('body-parser'));
+app.use(express.json());
 app.use('/api/auth', user);
 app.use(require('./middleware/validate-session'));
 app.use('/api/game', game);
 
+app.use('/', (req, res) => {
+  res.send('app is running');
+});
 const PORT = process.env.PORT || 4000;
 
 const start = async () => {
