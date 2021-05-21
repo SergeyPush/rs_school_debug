@@ -1,15 +1,32 @@
 var express = require('express');
-var app = express();
+require('dotenv').config();
 var db = require('./db');
+
+var app = express();
 var user = require('./controllers/usercontroller');
-var game = require('./controllers/gamecontroller')
+var game = require('./controllers/gamecontroller');
 
-
-db.sync();
-app.use(require('body-parser'));
+// app.use(require('body-parser'));
+app.use(express.json());
 app.use('/api/auth', user);
-app.use(require('./middleware/validate-session'))
+app.use(require('./middleware/validate-session'));
 app.use('/api/game', game);
-app.listen(function() {
-    console.log("App is listening on 4000");
-})
+
+app.use('/', (req, res) => {
+  res.send('app is running');
+});
+const PORT = process.env.PORT || 4000;
+
+const start = async () => {
+  try {
+    app.listen(PORT, function () {
+      console.log(`App is listening on ${PORT}`);
+    });
+
+    await db.sync();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
